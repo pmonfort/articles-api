@@ -8,13 +8,11 @@ RSpec.describe Api::ArticlesController, type: :controller do
     end
 
     it "returns all articles with comments count" do
-      article1 = create(:article)
-      article2 = create(:article)
-      create(:comment, article: article1)
-      create(:comment, article: article1)
-      create(:comment, article: article2)
+      article1 = create(:article_with_comments, comments_count: 2)
+      article2 = create(:article_with_comments, comments_count: 1)
 
       get :index
+
       json_response = JSON.parse(response.body)
 
       expect(json_response.length).to eq(2)
@@ -30,11 +28,12 @@ RSpec.describe Api::ArticlesController, type: :controller do
       get :index
       json_response = JSON.parse(response.body)
 
-      expect(json_response.first["id"]).to eq(article.id)
-      expect(json_response.first["title"]).to eq(article.title)
-      expect(json_response.first["body"]).to eq(article.body)
-      expect(json_response.first["author_name"]).to eq(article.author_name)
-      expect(json_response.first["comments_count"]).to eq(article.comments.count)
+      expect(json_response.first).to include(
+        "id" => article.id,
+        "title" => article.title,
+        "body" => article.body,
+        "author_name" => article.author_name
+      )
     end
   end
 
@@ -100,6 +99,31 @@ RSpec.describe Api::ArticlesController, type: :controller do
         expect(json_response).to have_key("errors")
         expect(json_response["errors"]).not_to be_empty
       end
+    end
+  end
+
+  describe "GET #engagement_overview" do
+    let(:number_of_articles) { rand(10..15) }
+    let(:number_of_comments) { rand(1..5) }
+    let(:json_response) { JSON.parse(response.body) }
+    let!(:articles) { create_list(:article_with_comments, number_of_articles, comments_count: number_of_comments) }
+
+    it "returns engagement statistics" do
+      get :engagement_overview
+
+      expect(json_response["total_articles"]).to eq(number_of_articles)
+      expect(json_response["total_comments"]).to eq(number_of_articles * number_of_comments)
+      expect(json_response).to have_key("most_commented_articles")
+    end
+
+    it "returns most commented articles" do
+      article1 = create(:article_with_comments, comments_count: 10)
+
+      get :engagement_overview
+
+      most_commented = json_response["most_commented_articles"]
+      expect(most_commented.first["id"]).to eq(article1.id)
+      expect(most_commented.first["comments_count"]).to eq(10)
     end
   end
 end

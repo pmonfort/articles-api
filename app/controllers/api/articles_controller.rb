@@ -23,6 +23,22 @@ module Api
       render json: @article, serializer: ArticleSerializer
     end
 
+    def engagement_overview
+      total_articles = Article.count
+      total_comments = Comment.count
+      most_commented = Article.left_joins(:comments)
+                              .select("articles.*, COUNT(comments.id) as comments_count")
+                              .group("articles.id")
+                              .order("comments_count DESC, articles.created_at DESC")
+                              .limit(5)
+
+      render json: {
+        total_articles: total_articles,
+        total_comments: total_comments,
+        most_commented_articles: most_commented.map { |article| ArticleSerializer.new(article).as_json }
+      }
+    end
+
     private
 
     def set_article
