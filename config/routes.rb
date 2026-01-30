@@ -7,7 +7,7 @@ Rails.application.routes.draw do
 
   # API routes
   namespace :api do
-    resources :articles, only: %i[index create] do
+    resources :articles, only: %i[index create show] do
       collection do
         get :engagement_overview
       end

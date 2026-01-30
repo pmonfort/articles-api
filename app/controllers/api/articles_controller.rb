@@ -2,25 +2,25 @@
 
 module Api
   class ArticlesController < ApplicationController
-    before_action :set_article, only: [:show]
+    before_action :set_article, only: [ :show ]
 
     def index
       @articles = Article.ordered.includes(:comments)
-      render json: @articles, each_serializer: ArticleSerializer
+      render json: @articles, each_serializer: ArticleSerializer, include_comments: false
     end
 
     def create
       @article = Article.new(article_params)
 
       if @article.save
-        render json: @article, serializer: ArticleSerializer, status: :created
+        render json: @article, serializer: ArticleSerializer, include_comments: false, status: :created
       else
         render json: { errors: @article.errors.full_messages }, status: :unprocessable_content
       end
     end
 
     def show
-      render json: @article, serializer: ArticleSerializer
+      render json: @article, serializer: ArticleSerializer, include_comments: true
     end
 
     def engagement_overview
@@ -35,7 +35,7 @@ module Api
       render json: {
         total_articles: total_articles,
         total_comments: total_comments,
-        most_commented_articles: most_commented.map { |article| ArticleSerializer.new(article).as_json }
+        most_commented_articles: most_commented.map { |article| ArticleSerializer.new(article, include_comments: false).as_json }
       }
     end
 
