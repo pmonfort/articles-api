@@ -1,6 +1,32 @@
 require "rails_helper"
 
 RSpec.describe Api::ArticlesController, type: :controller do
+  describe "GET #show" do
+    let!(:article) { create(:article_with_comments, comments_count: comments_qty) }
+    let(:comments_qty) { rand(1..5) }
+
+    it "returns a successful response" do
+      get :show, params: { id: article.id }
+      expect(response).to have_http_status(:success)
+    end
+
+    it "returns the article" do
+      get :show, params: { id: article.id }
+      json_response = JSON.parse(response.body)
+      expect(json_response["id"]).to eq(article.id)
+      expect(json_response["title"]).to eq(article.title)
+      expect(json_response["body"]).to eq(article.body)
+      expect(json_response["author_name"]).to eq(article.author_name)
+      expect(json_response["comments"]).to be_present
+      expect(json_response["comments_count"]).to eq(comments_qty)
+    end
+
+    it "returns a 404 status" do
+      get :show, params: { id: 0 }
+      expect(response).to have_http_status(:not_found)
+    end
+  end
+
   describe "GET #index" do
     it "returns a successful response" do
       get :index
@@ -32,7 +58,8 @@ RSpec.describe Api::ArticlesController, type: :controller do
         "id" => article.id,
         "title" => article.title,
         "body" => article.body,
-        "author_name" => article.author_name
+        "author_name" => article.author_name,
+        "comments_count" => article.comments.count
       )
     end
   end
