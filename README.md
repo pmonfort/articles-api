@@ -2,6 +2,10 @@
 
 A RESTful API built with Ruby on Rails for managing articles and comments. This is the backend component of a small articles application that allows users to create articles, add comments, and view engagement statistics.
 
+## Frontend
+
+https://github.com/pmonfort/articles-frontend
+
 ## Features
 
 - Create and list articles with title, body, and author name
