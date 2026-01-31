@@ -13,6 +13,6 @@ Rails.application.routes.draw do
       end
     end
 
-    resources :comments, only: [:create]
+    resources :comments, only: %i[create]
   end
 end
