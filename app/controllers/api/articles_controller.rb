@@ -22,7 +22,7 @@ module Api
     end
 
     def show
-      render json: @article
+      render json: @article, include: :comments
     end
 
     def engagement_overview
@@ -41,7 +41,7 @@ module Api
     private
 
     def set_article
-      @article = Article.find(params[:id])
+      @article = Article.includes(:comments).find(params[:id])
     rescue ActiveRecord::RecordNotFound
       render json: { error: "Article not found" }, status: :not_found
     end

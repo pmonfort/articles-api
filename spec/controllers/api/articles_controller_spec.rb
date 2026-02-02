@@ -17,6 +17,7 @@ RSpec.describe Api::ArticlesController, type: :controller do
       expect(json_response["title"]).to eq(article.title)
       expect(json_response["body"]).to eq(article.body)
       expect(json_response["author_name"]).to eq(article.author_name)
+      expect(json_response["comments"]).to be_present
       expect(json_response["comments_count"]).to eq(comments_qty)
     end
 
