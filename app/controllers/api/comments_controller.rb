@@ -6,7 +6,7 @@ module Api
       comment = Comment.new(comment_params)
 
       if comment.save
-        render json: comment, serializer: CommentSerializer, status: :created
+        render json: comment, status: :created
       else
         render json: { errors: comment.errors.full_messages }, status: :unprocessable_content
       end
