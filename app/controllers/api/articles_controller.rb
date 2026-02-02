@@ -4,6 +4,8 @@ module Api
   class ArticlesController < ApplicationController
     before_action :set_article, only: [ :show ]
 
+    MOST_COMMENTED_ARTICLES_QUANTITY = 5
+
     def index
       @articles = Article.ordered.includes(:comments)
       render json: @articles, each_serializer: ArticleSerializer, include_comments: false
@@ -26,16 +28,16 @@ module Api
     def engagement_overview
       total_articles = Article.count
       total_comments = Comment.count
-      most_commented = Article.left_joins(:comments)
-                              .select("articles.*, COUNT(comments.id) as comments_count")
-                              .group("articles.id")
-                              .order("comments_count DESC, articles.created_at DESC")
-                              .limit(5)
+      most_commented = Article.order(comments_count: :desc, created_at: :desc)
+                              .limit(MOST_COMMENTED_ARTICLES_QUANTITY)
+                              .map do |article|
+                                ArticleSerializer.new(article, include_comments: false).as_json
+                              end
 
       render json: {
         total_articles: total_articles,
         total_comments: total_comments,
-        most_commented_articles: most_commented.map { |article| ArticleSerializer.new(article, include_comments: false).as_json }
+        most_commented_articles: most_commented
       }
     end
 

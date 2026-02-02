@@ -304,8 +304,6 @@ Things I'd add next:
 - Search/filter endpoints
 - JWT auth
 - Redis caching for the engagement endpoint
-- Docker setup
-- CI with GitHub Actions
 
 ## License
 

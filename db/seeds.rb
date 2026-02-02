@@ -108,4 +108,4 @@ end
 
 puts "\n Seed data created successfully!"
 puts "\n Articles: #{Article.count}"
-puts "Comments: #{Comment.count}"
+puts " Comments: #{Comment.count}"
