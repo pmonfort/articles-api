@@ -25,7 +25,7 @@ https://github.com/pmonfort/articles-frontend
 
 1. Clone the repository:
 ```bash
-git clone <repository-url>
+git clone git@github.com:pmonfort/articles-api.git
 cd articles-api
 ```
 
@@ -341,7 +341,6 @@ Things I'd add next:
 - Paginationd
 - Search/filter endpoints
 - JWT auth
-- Redis caching for the engagement endpoint
 
 ## License
 
