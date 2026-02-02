@@ -117,8 +117,48 @@ Returns a list of all articles with their comment counts.
         "created_at": "2026-01-28T13:00:00.000Z"
       }
     ]
+  },
+  {
+    ...
   }
 ]
+```
+
+##### Get Article
+```
+GET /api/articles/:id
+```
+
+Returns a single article with all its comments.
+
+**Response:**
+```json
+{
+  "id": 1,
+  "title": "Getting Started with Rails",
+  "body": "Ruby on Rails is a powerful web framework...",
+  "author_name": "Alice Johnson",
+  "created_at": "2026-01-28T12:00:00.000Z",
+  "updated_at": "2026-01-28T12:00:00.000Z",
+  "comments_count": 3,
+  "comments": [
+    {
+      "id": 1,
+      "body": "Great article!",
+      "author_name": "John Doe",
+      "article_id": 1,
+      "created_at": "2026-01-28T13:00:00.000Z",
+      "updated_at": "2026-01-28T13:00:00.000Z"
+    }
+  ]
+}
+```
+
+**Error Response (404 Not Found):**
+```
+{
+  "error": "Article not found"
+}
 ```
 
 ##### Create Article
@@ -218,6 +258,7 @@ Returns engagement statistics including total articles, total comments, and most
 - `title` (string) - Article title (required)
 - `body` (text) - Article content (required)
 - `author_name` (string) - Author's name (required)
+- `comments_count` (integer) - Quantity of comments
 - `created_at` (datetime) - Creation timestamp
 - `updated_at` (datetime) - Last update timestamp
 
@@ -272,12 +313,9 @@ articles-api/
 │   │   └── api/
 │   │       ├── articles_controller.rb
 │   │       └── comments_controller.rb
-│   ├── models/
-│   │   ├── article.rb
-│   │   └── comment.rb
-│   └── serializers/
-│       ├── article_serializer.rb
-│       └── comment_serializer.rb
+│   └── models/
+│       ├── article.rb
+│       └── comment.rb
 ├── config/
 │   ├── routes.rb
 │   └── database.yml
